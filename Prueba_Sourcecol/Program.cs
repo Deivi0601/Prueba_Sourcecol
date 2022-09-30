@@ -1,5 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using System.IO;
 
 namespace SolveTestSourcecol
 {
@@ -12,7 +18,8 @@ namespace SolveTestSourcecol
             Console.WriteLine("1. Cortar cadena de texto");
             Console.WriteLine("2. Validar valor en serie Fibonacci");
             Console.WriteLine("3. Ordenar array");
-            Console.WriteLine("4. Agregar autos y validar modelo ");
+            Console.WriteLine("4. Agregar autos y validar modelo");
+            Console.WriteLine("5. Consular api Rick & Morty");
 
             int option = int.Parse(Console.ReadLine());
             switch (option)
@@ -37,6 +44,11 @@ namespace SolveTestSourcecol
                         processValidateModelCar();
                         break;
                     }
+                case 5:
+                    {
+                        processGetApiRickAndMorty();
+                        break;
+                    }
                 default:
                     {
                         Console.WriteLine("La opción seleccionada no es valida");
@@ -59,7 +71,7 @@ namespace SolveTestSourcecol
             int maxLength = int.Parse(Console.ReadLine());
 
             Console.WriteLine("Resultado ---> " + cutTextString(text, maxLength));
-            
+
         }
 
         /**
@@ -135,9 +147,9 @@ namespace SolveTestSourcecol
 
             int[] arrayNumbers = new int[countItems];
 
-            for(int i = 0; i < countItems; i++)
+            for (int i = 0; i < countItems; i++)
             {
-                Console.WriteLine($"Valor del array número {i+1}");
+                Console.WriteLine($"Valor del array número {i + 1}");
                 int value = int.Parse(Console.ReadLine());
                 arrayNumbers[i] = value;
             }
@@ -147,7 +159,7 @@ namespace SolveTestSourcecol
             int[] orderedArray = test.orderArray(arrayNumbers, optionOrder);
             int countPair = 0;
 
-            foreach(int value in orderedArray)
+            foreach (int value in orderedArray)
             {
                 if (value % 2 == 0)
                 {
@@ -155,7 +167,7 @@ namespace SolveTestSourcecol
                 }
             }
 
-            Console.WriteLine("El array ["+ string.Join(", ", orderedArray)+$"] tiene {countPair} números pares");
+            Console.WriteLine("El array [" + string.Join(", ", orderedArray) + $"] tiene {countPair} números pares");
 
         }
 
@@ -182,16 +194,16 @@ namespace SolveTestSourcecol
             Console.WriteLine("Inicia cuarto punto");
             Console.WriteLine("Elegir cuantos autos se quieren registrar, por cada uno se de guardar la marca, modelo y color");
             int countCars = int.Parse(Console.ReadLine());
-            
+
             List<Car> listCars = new List<Car>();
 
-            for(int i = 0; i < countCars; i++)
+            for (int i = 0; i < countCars; i++)
             {
-                Console.WriteLine($"Marca para el auto número {i+1}");
+                Console.WriteLine($"Marca para el auto número {i + 1}");
                 string brand = Console.ReadLine();
-                Console.WriteLine($"Modelo para el auto número {i+1}");
+                Console.WriteLine($"Modelo para el auto número {i + 1}");
                 int model = int.Parse(Console.ReadLine());
-                Console.WriteLine($"Color para el auto número {i+1}");
+                Console.WriteLine($"Color para el auto número {i + 1}");
                 string color = Console.ReadLine();
 
                 listCars.Add(new Car { Brand = brand, Model = model, Color = color });
@@ -201,14 +213,14 @@ namespace SolveTestSourcecol
 
             validateModelCar(listCars);
         }
-         
+
         public static List<Car> validateModelCar(List<Car> listCars)
         {
             IEnumerable<Car> cars = from car in listCars where car.Model >= 2017 select car;
             List<Car> newListCars = new List<Car>();
 
             Console.WriteLine("Los autos cuyo modelo no es de hace más de 5 años son");
-            foreach(Car car in cars)
+            foreach (Car car in cars)
             {
                 newListCars.Add(car);
                 Console.WriteLine($"Marca: {car.Brand}, Modelo: {car.Model}, Color: {car.Color}");
@@ -216,6 +228,77 @@ namespace SolveTestSourcecol
 
             return newListCars;
         }
+
+        public static void processGetApiRickAndMorty()
+        {
+            Console.WriteLine("Inicia quinto punto");
+            getApiRickAndMorty(1);
+        }
+
+        public static void getApiRickAndMorty(int page)
+        {
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("https://rickandmortyapi.com/api/character/");
+
+            client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage response = client.GetAsync($"?page={page}").Result;  
+            if (response.IsSuccessStatusCode)
+            {
+                var dataObjects = response.Content.ReadAsAsync<DataObject>().Result;
+                Console.WriteLine($"------------------------------- Inicio página {page} -------------------------------");
+                foreach(DetailResults character in dataObjects.results)
+                {
+                    Console.WriteLine(character.name);
+                }
+                Console.WriteLine($"------------------------------- Fin de la página -------------------------------");
+
+                if (dataObjects.info.next != null)
+                {
+                    Console.WriteLine($"¿Quieres ver la página {page+1}?");
+                    Console.WriteLine($"1. Sí");
+                    Console.WriteLine($"2. No");
+                    int optionSelected = int.Parse(Console.ReadLine());
+                    if(optionSelected == 1)
+                    {
+                        getApiRickAndMorty(page + 1);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Consulta finalizada");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Consulta o ya no hay más páginas para mostrar");
+                }
+
+            }
+
+            client.Dispose();
+
+        }
+    }
+
+    public class DataObject
+    {
+        public DetailInfo info { get; set; }
+        public DetailResults[] results { get; set; }
+    }
+
+    public class DetailInfo
+    {
+        public int count { get; set; }
+        public int pages { get; set; }
+        public string next { get; set; }
+        public string prev { get; set; }
+    }
+
+    public class DetailResults {
+        public string name { get; set; }
+
     }
 
     public class Car
