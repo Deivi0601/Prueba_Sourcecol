@@ -19,7 +19,12 @@ $(document).ready(() => {
     } else if (page > 1) {
       $("#backPage").show();
     }
-    getApiRickAndMorty();
+
+    if (listCharacters[page] && listCharacters[page].length > 0) {
+      createRowsTable(listCharacters[page]);
+    } else {
+      getApiRickAndMorty();
+    }
   });
 });
 
