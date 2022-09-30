@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace SolveTestSourcecol
 {
@@ -11,6 +12,7 @@ namespace SolveTestSourcecol
             Console.WriteLine("1. Cortar cadena de texto");
             Console.WriteLine("2. Validar valor en serie Fibonacci");
             Console.WriteLine("3. Ordenar array");
+            Console.WriteLine("4. Agregar autos y validar modelo ");
 
             int option = int.Parse(Console.ReadLine());
             switch (option)
@@ -28,6 +30,11 @@ namespace SolveTestSourcecol
                 case 3:
                     {
                         processOrderArray();
+                        break;
+                    }
+                case 4:
+                    {
+                        processValidateModelCar();
                         break;
                     }
                 default:
@@ -169,5 +176,52 @@ namespace SolveTestSourcecol
 
             return arrayNumbers;
         }
+
+        public static void processValidateModelCar()
+        {
+            Console.WriteLine("Inicia cuarto punto");
+            Console.WriteLine("Elegir cuantos autos se quieren registrar, por cada uno se de guardar la marca, modelo y color");
+            int countCars = int.Parse(Console.ReadLine());
+            
+            List<Car> listCars = new List<Car>();
+
+            for(int i = 0; i < countCars; i++)
+            {
+                Console.WriteLine($"Marca para el auto número {i+1}");
+                string brand = Console.ReadLine();
+                Console.WriteLine($"Modelo para el auto número {i+1}");
+                int model = int.Parse(Console.ReadLine());
+                Console.WriteLine($"Color para el auto número {i+1}");
+                string color = Console.ReadLine();
+
+                listCars.Add(new Car { Brand = brand, Model = model, Color = color });
+                Console.WriteLine("----------------------------");
+
+            }
+
+            validateModelCar(listCars);
+        }
+         
+        public static List<Car> validateModelCar(List<Car> listCars)
+        {
+            IEnumerable<Car> cars = from car in listCars where car.Model >= 2017 select car;
+            List<Car> newListCars = new List<Car>();
+
+            Console.WriteLine("Los autos cuyo modelo no es de hace más de 5 años son");
+            foreach(Car car in cars)
+            {
+                newListCars.Add(car);
+                Console.WriteLine($"Marca: {car.Brand}, Modelo: {car.Model}, Color: {car.Color}");
+            }
+
+            return newListCars;
+        }
+    }
+
+    public class Car
+    {
+        public string Brand { get; set; }
+        public int Model { get; set; }
+        public string Color { get; set; }
     }
 }
