@@ -10,6 +10,7 @@ namespace SolveTestSourcecol
             Console.WriteLine("Seleccionar opción a ejecutar");
             Console.WriteLine("1. Cortar cadena de texto");
             Console.WriteLine("2. Validar valor en serie Fibonacci");
+            Console.WriteLine("3. Ordenar array");
 
             int option = int.Parse(Console.ReadLine());
             switch (option)
@@ -22,6 +23,11 @@ namespace SolveTestSourcecol
                 case 2:
                     {
                         processValidateFibonacciSerie();
+                        break;
+                    }
+                case 3:
+                    {
+                        processOrderArray();
                         break;
                     }
                 default:
@@ -52,7 +58,7 @@ namespace SolveTestSourcecol
         /**
          * Cortar cadena de texto según longitud máxima de carácteres
          */
-        static string cutTextString(string text, int maxLength) => text.Substring(0, maxLength > text.Length ? text.Length : maxLength) + (text.Length > maxLength ? "..." : "");
+        public static string cutTextString(string text, int maxLength) => text.Substring(0, maxLength > text.Length ? text.Length : maxLength) + (text.Length > maxLength ? "..." : "");
 
         /**
          * Ejecutar validación de valor en serie Fibonacci
@@ -69,7 +75,7 @@ namespace SolveTestSourcecol
         /** 
          *  Validar si el valor enviado existe en la serie Fibonacci
          */
-        static string validateFibonacciSerie(int valueFibonacci)
+        public static string validateFibonacciSerie(int valueFibonacci)
         {
             // Mensaje de respuesta a retornar
             string messageResponse = "";
@@ -106,6 +112,62 @@ namespace SolveTestSourcecol
             return messageResponse;
         }
 
+        /**
+         * Ejecutar metodo para odernar array
+         */
+        public static void processOrderArray()
+        {
+            Console.WriteLine("Inicia tercer punto");
+            Console.WriteLine("Elegir opción en la que se va a ordenar, si se pone una opción no valida por defecto se usará la primera");
+            Console.WriteLine("1 -> Mayor a menor");
+            Console.WriteLine("2 -> Menor a mayor");
+            int optionOrder = int.Parse(Console.ReadLine());
 
+            Console.WriteLine("Elegir cantidad de elementos del array");
+            int countItems = int.Parse(Console.ReadLine());
+
+            int[] arrayNumbers = new int[countItems];
+
+            for(int i = 0; i < countItems; i++)
+            {
+                Console.WriteLine($"Valor del array número {i+1}");
+                int value = int.Parse(Console.ReadLine());
+                arrayNumbers[i] = value;
+            }
+
+            //Console.WriteLine("Resultado ---> " + orderArray(arrayNumbers,));
+            Test test = new Test();
+            int[] orderedArray = test.orderArray(arrayNumbers, optionOrder);
+            int countPair = 0;
+
+            foreach(int value in orderedArray)
+            {
+                if (value % 2 == 0)
+                {
+                    countPair++;
+                }
+            }
+
+            Console.WriteLine("El array ["+ string.Join(", ", orderedArray)+$"] tiene {countPair} números pares");
+
+        }
+
+        public int[] orderArray(int[] arrayNumbers, int order)
+        {
+
+            Array.Sort<int>(arrayNumbers, new Comparison<int>((a, b) =>
+            {
+                if (order == 2)
+                {
+                    return a.CompareTo(b);
+                }
+                else
+                {
+                    return b.CompareTo(a);
+                }
+            }));
+
+            return arrayNumbers;
+        }
     }
 }
