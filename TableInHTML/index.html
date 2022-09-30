@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Crear tabla</title>
+  </head>
+  <body>
+    <div class="scroll-overflow" style="max-height: 90vh">
+      <table class="primary-table" id="tableApiRickAndMorty">
+        <thead>
+          <tr>
+            <th></th>
+            <th>#</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Species</th>
+            <th>Type</th>
+            <th>Gender</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="container-options" style="height: 10vh">
+      <i class="fas fa-chevron-left item-setting" id="backPage"></i>
+      <span id="textNumberPage"></span>
+      <i class="fas fa-chevron-right item-setting" id="nextPage"></i>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
